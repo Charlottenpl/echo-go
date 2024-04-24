@@ -2,12 +2,15 @@ package main
 
 import (
 	"echo-go/router"
+	"echo-go/sql"
 	"fmt"
 )
 
 func main() {
 	fmt.Println("hello")
 
+	// init sql
+	sql.Init()
 	// 使用 := 短变量声明语法声明并初始化一个变量
 	r := router.InitRouter()
 

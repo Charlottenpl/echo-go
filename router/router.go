@@ -11,8 +11,9 @@ func InitRouter() *gin.Engine {
 	r.Use(gin.Recovery())
 
 	basePath := "/echo/file/"
+	basePath = "/Users/topjoy/file/"
 	r.StaticFS("/blog", http.Dir(basePath+"blog/"))
-	r.StaticFS("/file", http.Dir(basePath))
+	r.StaticFS("/file", http.Dir(basePath+"file/"))
 
 	// 定义Get请求
 	r.GET("/test", func(c *gin.Context) {
