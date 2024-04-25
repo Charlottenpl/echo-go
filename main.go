@@ -10,7 +10,7 @@ func main() {
 	fmt.Println("hello")
 
 	// init sql
-	sql.Init()
+	sql.Db()
 	// 使用 := 短变量声明语法声明并初始化一个变量
 	r := router.InitRouter()
 

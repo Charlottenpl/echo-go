@@ -3,10 +3,13 @@ package sql
 import (
 	"database/sql"
 	"fmt"
+	"time"
+
 	//执行driver.go文件中的init(),向"database/sql"注册一个mysql的驱动
 	_ "github.com/go-sql-driver/mysql"
 )
 
+// https://github.com/eddycjy/go-gin-example/blob/master/models/models.go
 var (
 	// 定义一个全局对象db
 	db *sql.DB
@@ -25,7 +28,10 @@ var (
 	charset string = "utf8"
 )
 
-func Init() {
+func Db() (*sql.DB, error) {
+	if db != nil {
+		return db, nil
+	}
 	dsn := "root:1234@tcp(117.50.187.91:3306)/echo?charset=utf8"
 	//Open打开一个driverName指定的数据库，dataSourceName指定数据源
 	//不会校验用户名和密码是否正确，只会对dsn的格式进行检测
@@ -33,13 +39,20 @@ func Init() {
 	db = Db
 	if err != nil { //dsn格式不正确的时候会报错
 		fmt.Printf("打开数据库失败,err:%v\n", err)
-		return
+		return nil, err
 	}
 	//尝试连接数据库，Ping方法可检查数据源名称是否合法,账号密码是否正确。
 	err = db.Ping()
 	if err != nil {
 		fmt.Printf("连接数据库失败,err:%v\n", err)
-		return
+		return nil, err
 	}
 	fmt.Println("连接数据库成功！")
+
+	db.SetConnMaxLifetime(10 * time.Minute) // 设置链接可重用的最长时间
+	db.SetConnMaxIdleTime(5 * time.Minute)  // 设置链接可能处于空闲状态的最长时间
+	db.SetMaxOpenConns(200)
+	db.SetMaxIdleConns(10)
+
+	return db, nil
 }
