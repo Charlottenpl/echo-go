@@ -1,30 +1,34 @@
 package sql
 
+import "time"
+
 type Blog struct {
-	id   int
-	title  string
-	pic  string
-	content string
-	tags   string
-	type   string
-	cre
-	name string
+	Id         int
+	Title      string
+	Pic        string
+	Content    string
+	Tags       string
+	Type       string
+	CreateTime time.Time
+	UpdateTime time.Time
+	ClickNum   int
+	Status     int
 }
 
 func GetById(id int) (Blog, error) {
 	var blog Blog
 	db, db_err := Db()
 	if db == nil {
-		return nil, db_err
+		return blog, db_err
 	}
 
-	command := "SELECT * FROM blog WHERE id = ?"
+	command := "SELECT id, title, pic, content, tags, type, create_time, update_time, click_num, status FROM blog WHERE id = ?"
 
-	err := db.QueryRow(command, id).Scan(&blog.id, &blog.age, &blog.name)
+	err := db.QueryRow(command, id).Scan(&blog.Id, &blog.Title, &blog.Pic, &blog.Content, &blog.Tags, &blog.Type, &blog.CreateTime, &blog.UpdateTime, &blog.ClickNum, &blog.Status)
 
 	if err != nil {
-		return nil, err
+		return blog, err
 	}
 
-	return nil
+	return blog, nil
 }
