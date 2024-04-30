@@ -1,7 +1,8 @@
 package router
 
 import (
-	"echo-go/sql"
+	"echo-go/internal/app"
+	"echo-go/internal/blog"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -16,20 +17,8 @@ func InitRouter() *gin.Engine {
 	r.StaticFS("/blogs", http.Dir(basePath+"blog/"))
 	r.StaticFS("/file", http.Dir(basePath+"file/"))
 
-	// 定义Get请求
-	r.GET("/test", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{"message": "Success"})
-	})
-
-	r.GET("/blog/getById", func(c *gin.Context) {
-		blog, err := sql.GetById(1)
-
-		if err != nil {
-			c.JSON(http.StatusOK, gin.H{"message": err.Error()})
-		} else {
-			c.JSON(http.StatusOK, gin.H{"message": blog})
-		}
-	})
+	r.GET("/test", app.Test)
+	r.GET("/blog/getById", blog.GetById)
 
 	//r.StaticFS("/export", http.Dir(export.GetExcelFullPath()))
 	//r.StaticFS("/upload/images", http.Dir(upload.GetImageFullPath()))
