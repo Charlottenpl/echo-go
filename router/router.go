@@ -18,7 +18,8 @@ func InitRouter() *gin.Engine {
 	r.StaticFS("/file", http.Dir(basePath+"file/"))
 
 	r.GET("/test", app.Test)
-	r.GET("/blog/getById", blog.GetById)
+
+	initBlog(r)
 
 	//r.StaticFS("/export", http.Dir(export.GetExcelFullPath()))
 	//r.StaticFS("/upload/images", http.Dir(upload.GetImageFullPath()))
@@ -59,4 +60,17 @@ func InitRouter() *gin.Engine {
 	//}
 
 	return r
+}
+
+func initBlog(r *gin.Engine) {
+	g := r.Group("/blog")
+
+	// 根据ID查询
+	g.GET("/getById", blog.GetById)
+
+	// 条件查询
+	g.POST("/find", blog.Find)
+
+	// 分页查询
+	g.POST("/list", blog.Page())
 }
