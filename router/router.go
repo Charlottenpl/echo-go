@@ -72,5 +72,8 @@ func initBlog(r *gin.Engine) {
 	g.POST("/find", blog.Find)
 
 	// 分页查询
-	g.POST("/list", blog.Page())
+	g.POST("/list", blog.Page)
+
+	// 添加
+	g.POST("/add", blog.Add)
 }

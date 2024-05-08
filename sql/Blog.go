@@ -50,7 +50,7 @@ func GetById(id int) (Blog, error) {
 // 需要查tags和blog的链接表
 func Find(title string, bt int64, et int64, content string, tag string, _type string, status int, limit, offset int) ([]*Blog, error) {
 	// 构建 SQL 查询语句
-	query := "SELECT * FROM blogs WHERE 1=1"
+	query := "SELECT id, title, pic, content, type, create_time, update_time, click_num, status FROM blogs WHERE 1=1"
 	var args []interface{}
 
 	// 添加条件
@@ -89,7 +89,7 @@ func Find(title string, bt int64, et int64, content string, tag string, _type st
 	args = append(args, limit, offset)
 
 	// 执行查询
-	rows, err := db.Query(query, args)
+	rows, err := db.Query(query, args...)
 	if err != nil {
 		return nil, err
 	}
@@ -99,7 +99,7 @@ func Find(title string, bt int64, et int64, content string, tag string, _type st
 	for rows.Next() {
 		var blog Blog
 		var ct, ut string
-		err := rows.Scan(&blog.Id, &blog.Title, &blog.Pic, &blog.Content, &blog.Tags, &blog.Type, &ct, &ut, &blog.ClickNum, &blog.Status)
+		err := rows.Scan(&blog.Id, &blog.Title, &blog.Pic, &blog.Content, &blog.Type, &ct, &ut, &blog.ClickNum, &blog.Status)
 		if err != nil {
 			return nil, err
 		}
@@ -123,7 +123,7 @@ func Find(title string, bt int64, et int64, content string, tag string, _type st
 // size 每页个数
 func ListPage(page, size int) ([]*Blog, error) {
 	offset := (page - 1) * size
-	command := "SELECT id, title, pic, content, tags, type, create_time, update_time, click_num, status FROM blog LIMIT ? OFFSET ?"
+	command := "SELECT id, title, pic, content, type, create_time, update_time, click_num, status FROM blog LIMIT ? OFFSET ?"
 	rows, err := db.Query(command, size, offset)
 	if err != nil {
 		return nil, err
@@ -134,7 +134,7 @@ func ListPage(page, size int) ([]*Blog, error) {
 	for rows.Next() {
 		var blog Blog
 		var ct, ut string
-		err := rows.Scan(&blog.Id, &blog.Title, &blog.Pic, &blog.Content, &blog.Tags, &blog.Type, &ct, &ut, &blog.ClickNum, &blog.Status)
+		err := rows.Scan(&blog.Id, &blog.Title, &blog.Pic, &blog.Content, &blog.Type, &ct, &ut, &blog.ClickNum, &blog.Status)
 		if err != nil {
 			return nil, err
 		}
@@ -150,4 +150,55 @@ func ListPage(page, size int) ([]*Blog, error) {
 		return nil, err
 	}
 	return blogs, nil
+}
+
+// 添加
+func Add(title, pic, content, _type string) (int64, error) {
+	colums := ""
+	values := ""
+	var args []interface{}
+
+	// 添加条件 title, pic, content, type, click_num, status
+	if title != "" {
+		colums += "title, "
+		values += "?, "
+		args = append(args, title)
+	}
+
+	if pic != "" {
+		colums += "pic, "
+		values += "?, "
+		args = append(args, pic)
+	}
+
+	if content != "" {
+		colums += "content, "
+		values += "?, "
+		args = append(args, content)
+	}
+
+	if _type != "" {
+		colums += "type, "
+		values += "?, "
+		args = append(args, _type)
+	}
+
+	colums += "status"
+	values += "0"
+
+	command := "INSERT INTO blog (" + colums + ") values (" + values + ")"
+
+	// !使用...运算符展开args
+	result, err := db.Exec(command, args...)
+	if err != nil {
+		return 0, err
+	}
+
+	var newID int64
+	newID, err = result.LastInsertId() // 新插入数据的id
+	if err != nil {
+		fmt.Printf("get lastinsert ID failed, err: %v\n", err)
+		return 0, err
+	}
+	return newID, nil
 }
