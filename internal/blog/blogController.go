@@ -6,6 +6,21 @@ import (
 	"net/http"
 )
 
+func Get(c *gin.Context) {
+
+	id, found := c.Params.Get("id")
+	if found {
+		blog, err := sql.GetById(id)
+	}
+
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{"message": err.Error()})
+	} else {
+		c.JSON(http.StatusOK, gin.H{"message": blog})
+	}
+
+}
+
 func GetById(c *gin.Context) {
 
 	blog, err := sql.GetById(1)

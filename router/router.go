@@ -65,6 +65,9 @@ func InitRouter() *gin.Engine {
 func initBlog(r *gin.Engine) {
 	g := r.Group("/blog")
 
+	// 条件查询
+	g.GET("/get", blog.Get)
+
 	// 根据ID查询
 	g.GET("/getById", blog.GetById)
 
