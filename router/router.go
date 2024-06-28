@@ -3,12 +3,27 @@ package router
 import (
 	"echo-go/internal/app"
 	"echo-go/internal/blog"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"time"
 )
 
 func InitRouter() *gin.Engine {
 	r := gin.New()
+
+	// CORS configuration
+	config := cors.Config{
+		AllowOrigins:     []string{"http://localhost:5173"},
+		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowHeaders:     []string{"Origin", "Content-Type", "Accept"},
+		ExposeHeaders:    []string{"Content-Length"},
+		AllowCredentials: true,
+		MaxAge:           12 * time.Hour,
+	}
+
+	r.Use(cors.New(config))
+
 	r.Use(gin.Logger())
 	r.Use(gin.Recovery())
 
@@ -66,10 +81,10 @@ func initBlog(r *gin.Engine) {
 	g := r.Group("/blog")
 
 	// 条件查询
-	g.GET("/get", blog.Get)
+	g.POST("/get", blog.Get)
 
 	// 根据ID查询
-	g.GET("/getById", blog.GetById)
+	g.POST("/getById", blog.GetById)
 
 	// 条件查询
 	g.POST("/find", blog.Find)

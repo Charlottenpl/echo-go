@@ -4,14 +4,22 @@ import (
 	"echo-go/sql"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"strconv"
 )
 
 func Get(c *gin.Context) {
-
-	id, found := c.Params.Get("id")
-	if found {
-		blog, err := sql.GetById(id)
+	var data struct {
+		Data struct {
+			ID int `json:"id"`
+		}
 	}
+
+	// 绑定JSON请求体到结构体
+	if err := c.BindJSON(&data); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request"})
+		return
+	}
+	blog, err := sql.GetById(data.Data.ID)
 
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{"message": err.Error()})
@@ -22,8 +30,12 @@ func Get(c *gin.Context) {
 }
 
 func GetById(c *gin.Context) {
-
-	blog, err := sql.GetById(1)
+	idStr, found := c.Params.Get("id")
+	id, err := strconv.Atoi(idStr)
+	if !found || err != nil {
+		c.JSON(http.StatusOK, gin.H{"message": "id not found"})
+	}
+	blog, err := sql.GetById(id)
 
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{"message": err.Error()})
