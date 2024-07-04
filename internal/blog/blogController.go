@@ -10,7 +10,8 @@ import (
 func Get(c *gin.Context) {
 	var data struct {
 		Data struct {
-			ID int `json:"id"`
+			ID   int    `json:"id"`
+			Type string `json:"type"`
 		}
 	}
 
@@ -19,7 +20,35 @@ func Get(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request"})
 		return
 	}
+	if data.Data.ID != 0 {
+
+	}
 	blog, err := sql.GetById(data.Data.ID)
+
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{"message": err.Error()})
+	} else {
+		c.JSON(http.StatusOK, gin.H{"message": blog})
+	}
+
+}
+
+func GetByType(c *gin.Context) {
+	var data struct {
+		Data struct {
+			Type int `json:"type"`
+		}
+	}
+
+	// 绑定JSON请求体到结构体
+	if err := c.BindJSON(&data); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request"})
+		return
+	}
+	if data.Data.Type != 0 {
+
+	}
+	blog, err := sql.GetByType(data.Data.Type)
 
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{"message": err.Error()})
@@ -53,7 +82,7 @@ func Find(c *gin.Context) {
 		Et      int64  `form:"end_time"   binding:"required"`
 		Content string `form:"content" binding:"required"`
 		Tags    string `form:"tags" binding:"required"`
-		Type    string `form:"type" binding:"required"`
+		Type    int    `form:"type" binding:"required"`
 		Status  int    `form:"status" binding:"required"`
 		Limit   int    `form:"limit" binding:"required"`
 		Offset  int    `form:"offset" binding:"required"`

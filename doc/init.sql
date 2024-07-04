@@ -23,7 +23,7 @@ CREATE TABLE `blog`  (
   `title` varchar(255) NULL,
   `pic` varchar(255) NULL,
   `content` TEXT NULL,
-  `type` varchar(255) NULL,
+  `type` int NULL,
   `create_time` datetime NULL,
   `update_time` datetime NULL,
   `click_num` int NOT NULL DEFAULT 0,
@@ -97,4 +97,8 @@ SET new.update_time = CURRENT_TIMESTAMP;
 
 
 -- DROP TRIGGER blog_update
-SELECT * FROM blog WHERE id=1
+SELECT * FROM blog WHERE id=1;
+
+INSERT INTO blog (id, title, pic, content, type, create_time, update_time, click_num, status) VALUES (1, '测试文章', 'https://', '# hello', 1, '2024-06-30 01:00:32', '2024-06-30 01:11:53', 0, 0);
+INSERT INTO blog (id, title, pic, content, type, create_time, update_time, click_num, status) VALUES (2, '测试文章', 'https://', '# hello', 1, '2024-06-30 01:02:18', '2024-06-30 01:11:53', 0, 0);
+INSERT INTO blog (id, title, pic, content, type, create_time, update_time, click_num, status) VALUES (3, '测试文章', 'https://', '# hello', 1, '2024-06-30 01:02:18', '2024-06-30 01:11:53', 0, 0);

@@ -86,6 +86,9 @@ func initBlog(r *gin.Engine) {
 	// 根据ID查询
 	g.POST("/getById", blog.GetById)
 
+	// 根据type查询
+	g.POST("/getByType", blog.GetByType)
+
 	// 条件查询
 	g.POST("/find", blog.Find)
 

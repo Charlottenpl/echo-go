@@ -32,7 +32,8 @@ func Db() (*sql.DB, error) {
 	if db != nil {
 		return db, nil
 	}
-	dsn := "root:1234@tcp(117.50.187.91:3306)/echo?charset=utf8"
+	//dsn := "root:1234@tcp(117.50.187.91:3306)/echo?charset=utf8"
+	dsn := "root:1234@tcp(127.0.0.1:3306)/?charset=utf8"
 	//Open打开一个driverName指定的数据库，dataSourceName指定数据源
 	//不会校验用户名和密码是否正确，只会对dsn的格式进行检测
 	Db, err := sql.Open("mysql", dsn)
