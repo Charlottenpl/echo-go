@@ -5,9 +5,10 @@ import (
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
+	"time"
 )
 
-func Get(c *gin.Context) {
+func GetList(c *gin.Context) {
 	var data struct {
 		Data struct {
 			ID   int    `json:"id"`
@@ -139,7 +140,18 @@ func Add(c *gin.Context) {
 		return
 	}
 
-	id, err := sql.Add(req.Title, req.Pic, req.Content, req.Type)
+	blog := sql.Blog{
+		Id:         0,
+		Title:      req.Title,
+		Pic:        req.Pic,
+		Content:    req.Content,
+		Type:       req.Type,
+		CreateTime: time.Time{},
+		UpdateTime: time.Time{},
+		ClickNum:   0,
+		Status:     0,
+	}
+	id, err := sql.Add(blog)
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{"message": err.Error()})
 	} else {

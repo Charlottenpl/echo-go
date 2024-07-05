@@ -81,7 +81,7 @@ func initBlog(r *gin.Engine) {
 	g := r.Group("/blog")
 
 	// 条件查询
-	g.POST("/get", blog.Get)
+	g.POST("/get", blog.GetList)
 
 	// 根据ID查询
 	g.POST("/getById", blog.GetById)

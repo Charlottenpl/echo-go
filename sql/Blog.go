@@ -6,18 +6,18 @@ import (
 )
 
 type Blog struct {
-	Id         int
-	Title      string
-	Pic        string
-	Content    string
-	Type       string
-	CreateTime time.Time
-	UpdateTime time.Time
-	ClickNum   int
-	Status     int
+	Id         int       // id
+	Title      string    // 标题
+	Pic        string    // 展示图片
+	Content    string    // 内容
+	Type       string    // 分类
+	CreateTime time.Time // 创建时间
+	UpdateTime time.Time // 更新时间
+	ClickNum   int       // 点击数
+	Status     int       // 当前状态
 }
 
-// GetById 根据ID获取
+// GetById 根据ID获取 ✅
 func GetById(id int) (Blog, error) {
 	var blog Blog
 	var ct, ut string
@@ -47,6 +47,7 @@ func GetById(id int) (Blog, error) {
 	return blog, nil
 }
 
+// GetByType 根据分类获取
 func GetByType(_type int) ([]Blog, error) {
 	var blogs []Blog
 
@@ -90,7 +91,7 @@ func GetByType(_type int) ([]Blog, error) {
 	return blogs, nil
 }
 
-// 需要查tags和blog的链接表
+// Find 需要查tags和blog的链接表
 func Find(title string, bt int64, et int64, content string, tag string, _type int, status int, limit, offset int) ([]*Blog, error) {
 	// 构建 SQL 查询语句
 	query := "SELECT id, title, pic, content, type, create_time, update_time, click_num, status FROM blogs WHERE 1=1"
@@ -195,35 +196,35 @@ func ListPage(page, size int) ([]*Blog, error) {
 	return blogs, nil
 }
 
-// 添加
-func Add(title, pic, content, _type string) (int64, error) {
+// Add 添加
+func Add(blog Blog) (int64, error) {
 	colums := ""
 	values := ""
 	var args []interface{}
 
 	// 添加条件 title, pic, content, type, click_num, status
-	if title != "" {
+	if blog.Title != "" {
 		colums += "title, "
 		values += "?, "
-		args = append(args, title)
+		args = append(args, blog.Title)
 	}
 
-	if pic != "" {
+	if blog.Pic != "" {
 		colums += "pic, "
 		values += "?, "
-		args = append(args, pic)
+		args = append(args, blog.Pic)
 	}
 
-	if content != "" {
+	if blog.Content != "" {
 		colums += "content, "
 		values += "?, "
-		args = append(args, content)
+		args = append(args, blog.Content)
 	}
 
-	if _type != "" {
+	if blog.Type != "" {
 		colums += "type, "
 		values += "?, "
-		args = append(args, _type)
+		args = append(args, blog.Type)
 	}
 
 	colums += "status"
